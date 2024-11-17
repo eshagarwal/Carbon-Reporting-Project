@@ -1,79 +1,19 @@
 import streamlit as st
-import pandas as pd
-import plotly.express as px
 import plotly.graph_objects as go
+import pandas as pd
+
 import datetime
-import json
-import base64
-from io import BytesIO
 import uuid
 
-# Initialize session state for database simulation
-if "companies_data" not in st.session_state:
-    st.session_state.companies_data = []
+from carbon_calculator.utils import label, get_csv_download_link, get_image_download_link
 
-# Page configuration
-st.set_page_config(
-    page_title="Carbon Footprint Calculator", page_icon="🌍", layout="wide"
-)
-
-# Custom CSS for styling
-st.markdown(
-    """
-<style>
-    .stApp {
-        background-color: #f5f7f9;
-    }
-    .input-section {
-        border-top: 2px solid #dddddd;
-    }
-    .results-section {
-        border-top: 2px solid #dddddd;
-    }
-    .admin-card {
-        border-top: 2px solid #dddddd;
-    }
-    .user-sub-header {
-        background-color: #e3f2fd; 
-        padding: 15px; 
-        border-radius: 5px; 
-        margin-bottom: 20px;
-    }
-    .custom-icon-header {
-        height: 40px; 
-        width: auto;
-    }
-    .custom-icon-sub-header {
-        height: 25px; 
-        width: auto;
-    }
-</style>
-""",
-    unsafe_allow_html=True,
-)
-
-# User/Admin Selection
-user_type = st.sidebar.selectbox("Select User Type", ["Company User", "Admin"])
-
-
-def label(icon: str, title: str, is_subheader: bool = False) -> str:
-    icon_class = "custom-icon-sub-header" if is_subheader else "custom-icon-header"
-    return f"""
-    {'<h3>' if is_subheader else '<h1>'}
-        <img class='{icon_class}' src='https://raw.githubusercontent.com/eshagarwal/Carbon-Reporting-Project/main/Icons/{icon}.png'/>
-        {title}
-    {'</h3>' if is_subheader else '</h1>'}
-"""
-
-
-# User View
-if user_type == "Company User":
+def user_view():
     st.markdown(
-        label(
-            icon="leaf.arrow.triangle.circlepath", title="Carbon Footprint Calculator"
-        ),
-        unsafe_allow_html=True,
-    )
+            label(
+                icon="leaf.arrow.triangle.circlepath", title="Carbon Footprint Calculator"
+            ),
+            unsafe_allow_html=True,
+        )
     st.markdown(
         """
         <div class='user-sub-header'>
@@ -281,31 +221,6 @@ if user_type == "Company User":
         ]
 
         return suggestions
-
-    # Download functions
-    def get_image_download_link(fig, filename, icon, text):
-        buf = BytesIO()
-        fig.write_image(buf, format="pdf")
-        buf.seek(0)
-        b64 = base64.b64encode(buf.read()).decode()
-        href = f"""
-        <img style="height: 20px; width: auto" src='https://raw.githubusercontent.com/eshagarwal/Carbon-Reporting-Project/main/Icons/{icon}.png'/>
-        <a href="data:application/pdf;base64,{b64}" download="{filename}.pdf">
-            {text}
-        </a>
-        """
-        return href
-
-    def get_csv_download_link(df, filename, icon, text):
-        csv = df.to_csv(index=False)
-        b64 = base64.b64encode(csv.encode()).decode()
-        href = f"""
-        <img style="height: 20px; width: auto" src='https://raw.githubusercontent.com/eshagarwal/Carbon-Reporting-Project/main/Icons/{icon}.png'/>
-        <a href="data:application/pdf;base64,{b64}" download="{filename}">
-            {text}
-        </a>
-        """
-        return href
 
     # Calculate button
     if st.button("Calculate Carbon Footprint", key="calculate"):
@@ -535,67 +450,3 @@ if user_type == "Company User":
             """
             )
             st.markdown("</div>", unsafe_allow_html=True)
-
-
-else:  # Admin View
-    def download_data_button():
-        csv = df.to_csv(index=False)
-        b64 = base64.b64encode(csv.encode()).decode()
-        href = f"""
-        <img style="height: 20px; width: auto" src='https://raw.githubusercontent.com/eshagarwal/Carbon-Reporting-Project/main/Icons/square.and.arrow.down.png'/>
-        <a href="data:file/csv;base64,{b64}" download="complete_carbon_footprint_data.csv">
-        Click here to download the complete dataset
-        </a>
-        """
-        st.markdown(href, unsafe_allow_html=True)
-    st.markdown(label(icon="person.badge.key", title="Admin Dashboard"), unsafe_allow_html=True)
-
-    if not st.session_state.companies_data:
-        st.warning("No company data available yet.")
-    else:
-        # Convert session state data to DataFrame
-        df = pd.DataFrame(st.session_state.companies_data)
-
-        # Overview metrics
-        st.markdown("<div class='admin-card'>", unsafe_allow_html=True)
-        col1, col2, col3 = st.columns(3)
-        with col1:
-            st.metric("Total Companies", len(df["company_name"].unique()))
-        with col2:
-            st.metric("Total Reports", len(df))
-        with col3:
-            st.metric("Total Emissions", f"{df['total'].sum():.2f} kgCO2")
-        st.markdown("</div>", unsafe_allow_html=True)
-
-        # Historical Data
-        st.markdown("<div class='admin-card'>", unsafe_allow_html=True)
-        st.markdown(label(icon="chart.line.uptrend.xyaxis", title="Historical Data", is_subheader=True), unsafe_allow_html=True)
-        st.dataframe(
-            df.style.format(
-                {
-                    "energy_usage": "{:.2f}",
-                    "waste": "{:.2f}",
-                    "business_travel": "{:.2f}",
-                    "total": "{:.2f}",
-                }
-            ),
-            use_container_width=True,
-        )
-        st.markdown("</div>", unsafe_allow_html=True)
-
-        # Company Comparison
-        st.markdown("<div class='admin-card'>", unsafe_allow_html=True)
-        st.markdown(label(icon="magnifyingglass.circle", title="Company Comparison", is_subheader=True), unsafe_allow_html=True)
-        fig = px.bar(
-            df,
-            x="company_name",
-            y=["energy_usage", "waste", "business_travel"],
-            title="Emissions by Company",
-            labels={"value": "Emissions (kgCO2)", "company_name": "Company"},
-            barmode="stack",
-        )
-        st.plotly_chart(fig, use_container_width=True)
-        st.markdown("</div>", unsafe_allow_html=True)
-
-        # Download complete dataset
-        download_data_button()
