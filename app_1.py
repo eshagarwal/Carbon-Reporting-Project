@@ -40,22 +40,39 @@ st.markdown("""
         border-radius: 5px; 
         margin-bottom: 20px;
     }
+    .custom-icon-header {
+        height: 40px; 
+        width: auto;
+    }
+    .custom-icon-sub-header {
+        height: 25px; 
+        width: auto;
+    }
 </style>
 """, unsafe_allow_html=True)
 
 # User/Admin Selection
 user_type = st.sidebar.selectbox("Select User Type", ["Company User", "Admin"])
 
+def label(icon: str, title: str, is_subheader: bool = False) -> str:
+    icon_class = 'custom-icon-sub-header' if is_subheader else 'custom-icon-header'
+    return f"""
+    {'<h3>' if is_subheader else '<h1>'}
+        <img class='{icon_class}' src='https://raw.githubusercontent.com/eshagarwal/Carbon-Reporting-Project/main/Icons/{icon}.png'/>
+        {title}
+    {'</h3>' if is_subheader else '</h1>'}
+"""
+
 # User View
 if user_type == "Company User":
-    st.title("🌍 Corporate Carbon Footprint Calculator")
+    st.markdown(label(icon='leaf.arrow.triangle.circlepath', title="Carbon Footprint Calculator"), unsafe_allow_html=True)
     st.markdown("""
         <div class='user-sub-header'>
             This tool helps organizations calculate and visualize their carbon footprint across three main categories:
             <ul> 
-                <li> ⚡ Energy Usage </li>
-                <li> 🗑️ Waste Management </li>
-                <li> ✈️ Business Travel </li>
+                <li> Energy Usage </li>
+                <li> Waste Management </li>
+                <li> Business Travel </li>
             <ul> 
         </div>
         """, unsafe_allow_html=True)
@@ -63,7 +80,7 @@ if user_type == "Company User":
     # Company Information
     with st.container():
         st.markdown("<div class='input-section'>", unsafe_allow_html=True)
-        st.subheader("📋 Company Information")
+        st.markdown(label(icon='list.clipboard', title='Company Information', is_subheader=True), unsafe_allow_html=True)
         company_name = st.text_input(
             "Company Name", 
             key="company_name", 
@@ -77,7 +94,7 @@ if user_type == "Company User":
     # Energy Usage Section
     with col1:
         st.markdown("<div class='input-section'>", unsafe_allow_html=True)
-        st.subheader("⚡ Energy Usage")
+        st.markdown(label(icon='bolt.ring.closed', title='Energy Usage', is_subheader=True), unsafe_allow_html=True)
         electricity_bill = st.number_input(
             "Monthly Electricity Bill (€)",
             min_value=0.0,
@@ -98,7 +115,7 @@ if user_type == "Company User":
     # Waste Section
     with col2:
         st.markdown("<div class='input-section'>", unsafe_allow_html=True)
-        st.subheader("🗑️ Waste")
+        st.markdown(label(icon='arrow.up.trash', title='Waste', is_subheader=True), unsafe_allow_html=True)
         waste_per_month = st.number_input(
             "Monthly Waste Generated (kg)",
             min_value=0.0,
@@ -116,7 +133,7 @@ if user_type == "Company User":
     # Business Travel Section
     with col3:
         st.markdown("<div class='input-section'>", unsafe_allow_html=True)
-        st.subheader("✈️ Business Travel")
+        st.markdown(label(icon='airplane.circle', title='Business Travel', is_subheader=True), unsafe_allow_html=True)
         distance_km = st.number_input(
             "Distance Traveled (km)",
             min_value=0.0,
@@ -262,7 +279,7 @@ if user_type == "Company User":
 
             # Results section
             st.markdown("<div class='results-section'>", unsafe_allow_html=True)
-            st.subheader("📊 Carbon Footprint Results")
+            st.markdown(label(icon='chart.bar.xaxis.ascending', title='Carbon Footprint Results', is_subheader=True), unsafe_allow_html=True)
 
             # Display results in columns
             res_col1, res_col2 = st.columns([2, 1])
@@ -325,7 +342,7 @@ if user_type == "Company User":
                 
            # Suggestions Section
             st.markdown("<div class='results-section'>", unsafe_allow_html=True)
-            st.subheader("🌱 Emission Reduction Suggestions")
+            st.markdown(label(icon='leaf', title='Emission Reduction Suggestions', is_subheader=True), unsafe_allow_html=True)
 
             suggestions = generate_suggestions(
                 CO2_from_energy_usage, CO2_from_waste, CO2_from_business_travel,
@@ -334,12 +351,12 @@ if user_type == "Company User":
             )
 
             # Display Priority Actions
-            st.markdown("### 🎯 Priority Actions")
+            # st.markdown(label(icon='custom.target.badge.exclamationmark', title='Priority Actions', is_subheader=True), unsafe_allow_html=True)
             for action in suggestions["priority_actions"]:
                 st.markdown(f"- {action}")
 
             # Create tabs for detailed suggestions
-            tab1, tab2, tab3 = st.tabs(["⚡ Energy", "🗑️ Waste", "✈️ Travel"])
+            tab1, tab2, tab3 = st.tabs(["Energy", "Waste", "Travel"])
 
             with tab1:
                 if suggestions["energy"]:
