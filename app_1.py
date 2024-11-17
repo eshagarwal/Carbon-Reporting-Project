@@ -26,27 +26,19 @@ st.markdown("""
         background-color: #f5f7f9;
     }
     .input-section {
-        background-color: white;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        margin: 10px 0;
-        border: 1px solid #e0e0e0;
+        border-top: 2px solid #dddddd;
     }
     .results-section {
-        background-color: white;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        margin: 20px 0;
+        border-top: 2px solid #dddddd;
     }
     .admin-card {
-        background-color: white;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        margin: 10px 0;
-        border-left: 4px solid #2196F3;
+        border-top: 2px solid #dddddd;
+    }
+    .user-sub-header {
+        background-color: #e3f2fd; 
+        padding: 15px; 
+        border-radius: 5px; 
+        margin-bottom: 20px;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -54,22 +46,28 @@ st.markdown("""
 # User/Admin Selection
 user_type = st.sidebar.selectbox("Select User Type", ["Company User", "Admin"])
 
+# User View
 if user_type == "Company User":
     st.title("🌍 Corporate Carbon Footprint Calculator")
     st.markdown("""
-    <div style='background-color: #e3f2fd; padding: 15px; border-radius: 5px; margin-bottom: 20px;'>
-        This tool helps organizations calculate and visualize their carbon footprint across three main categories:
-        - ⚡ Energy Usage
-        - 🗑️ Waste Management
-        - ✈️ Business Travel
-    </div>
-    """, unsafe_allow_html=True)
+        <div class='user-sub-header'>
+            This tool helps organizations calculate and visualize their carbon footprint across three main categories:
+            <ul> 
+                <li> ⚡ Energy Usage </li>
+                <li> 🗑️ Waste Management </li>
+                <li> ✈️ Business Travel </li>
+            <ul> 
+        </div>
+        """, unsafe_allow_html=True)
 
     # Company Information
     with st.container():
         st.markdown("<div class='input-section'>", unsafe_allow_html=True)
         st.subheader("📋 Company Information")
-        company_name = st.text_input("Company Name", key="company_name")
+        company_name = st.text_input(
+            "Company Name", 
+            key="company_name", 
+            help="Enter your company name")
         report_date = st.date_input("Report Date", datetime.datetime.now())
         st.markdown("</div>", unsafe_allow_html=True)
 
@@ -225,10 +223,10 @@ if user_type == "Company User":
     # Download functions
     def get_image_download_link(fig, filename, text):
         buf = BytesIO()
-        fig.write_image(buf, format="png")
+        fig.write_image(buf, format="pdf")
         buf.seek(0)
         b64 = base64.b64encode(buf.read()).decode()
-        href = f'<a href="data:image/png;base64,{b64}" download="{filename}">{text}</a>'
+        href = f'<a href="data:application/pdf;base64,{b64}" download="{filename}.pdf">{text}</a>'
         return href
 
     def get_csv_download_link(df, filename, text):
@@ -288,8 +286,8 @@ if user_type == "Company User":
                 st.plotly_chart(fig, use_container_width=True)
 
                 # Download buttons for chart
-                st.markdown(get_image_download_link(fig, "carbon_footprint_chart.png", 
-                          "📥 Download Chart as PNG"), unsafe_allow_html=True)
+                st.markdown(get_image_download_link(fig, "carbon_footprint_chart.pdf", 
+                          "📥 Download Chart as PDF"), unsafe_allow_html=True)
 
             with res_col2:
                 # Display detailed results
@@ -390,29 +388,9 @@ if user_type == "Company User":
             """)
             st.markdown("</div>", unsafe_allow_html=True)
 
-            # st.markdown("</div>", unsafe_allow_html=True)
-
-    # Methodology section
-    with st.expander("ℹ️ Calculation Methodology"):
-        st.markdown("""
-        ### Emission Factors Used:
-        
-        1. **Energy Usage**:
-            - Electricity: 0.0005 kgCO2/€
-            - Natural Gas: 0.0053 kgCO2/€
-            - Fuel: 2.32 kgCO2/€
-
-        2. **Waste**:
-            - 0.57 kgCO2 per kg of waste
-            - Reduced by recycling percentage
-
-        3. **Business Travel**:
-            - 2.31 kgCO2 per liter of fuel
-            - Adjusted by vehicle efficiency
-        """)
 
 else:  # Admin View
-    st.title("👨‍💼 Admin Dashboard")
+    st.title("👩🏻‍💼 Admin Dashboard")
     
     if not st.session_state.companies_data:
         st.warning("No company data available yet.")
@@ -458,36 +436,3 @@ else:  # Admin View
             b64 = base64.b64encode(csv.encode()).decode()
             href = f'<a href="data:file/csv;base64,{b64}" download="complete_carbon_footprint_data.csv">Click here to download the complete dataset</a>'
             st.markdown(href, unsafe_allow_html=True)
-
-        # Suggestion Implementation Tracking
-        st.markdown("<div class='admin-card'>", unsafe_allow_html=True)
-        st.subheader("📋 Emission Reduction Progress")
-        
-        # Calculate potential reductions for all companies
-        total_current_emissions = df['total'].sum()
-        potential_reduction = total_current_emissions * 0.3
-        
-        col1, col2 = st.columns(2)
-        with col1:
-            st.metric(
-                "Current Total Emissions",
-                f"{total_current_emissions:.2f} kgCO2"
-            )
-        with col2:
-            st.metric(
-                "Potential Reduction Target",
-                f"{potential_reduction:.2f} kgCO2",
-                "30%"
-            )
-        
-        # Add a timeline chart for emissions trend
-        if len(df) > 1:
-            df['date'] = pd.to_datetime(df['date'])
-            timeline_fig = px.line(df.groupby('date')['total'].sum().reset_index(), 
-                                 x='date', y='total',
-                                 title="Emissions Trend Over Time",
-                                 labels={'total': 'Total Emissions (kgCO2)',
-                                        'date': 'Report Date'})
-            st.plotly_chart(timeline_fig, use_container_width=True)
-        
-        st.markdown("</div>", unsafe_allow_html=True)
