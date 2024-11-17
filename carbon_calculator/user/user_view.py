@@ -1,10 +1,10 @@
 import streamlit as st
 import plotly.graph_objects as go
 import pandas as pd
-
 import datetime
 import uuid
 
+from carbon_calculator.calculator import calculate_CO2_from_energy_usage, calculate_CO2_from_waste, calculate_CO2_from_business_travel
 from carbon_calculator.utils import label, get_csv_download_link, get_image_download_link
 
 def user_view():
@@ -112,21 +112,9 @@ def user_view():
         st.markdown("</div>", unsafe_allow_html=True)
 
     # Calculation functions
-    def calculate_CO2_from_energy_usage(electricity_bill, natural_gas_bill, fuel_bill):
-        CO2_from_electricity_usage = electricity_bill * 12 * 0.0005
-        CO2_from_natural_gas_usage = natural_gas_bill * 12 * 0.0053
-        CO2_from_fuel_usage = fuel_bill * 12 * 2.32
-        return (
-            CO2_from_electricity_usage
-            + CO2_from_natural_gas_usage
-            + CO2_from_fuel_usage
-        )
-
-    def calculate_CO2_from_waste(waste_per_month, recycling_percent):
-        return waste_per_month * 12 * 0.57 - recycling_percent
-
-    def calculate_CO2_from_business_travel(distance_km, fuel_efficiency):
-        return distance_km * 1 / fuel_efficiency * 2.31
+    calculate_CO2_from_energy_usage(electricity_bill, natural_gas_bill, fuel_bill)
+    calculate_CO2_from_waste(waste_per_month, recycling_percent)
+    calculate_CO2_from_business_travel(distance_km, fuel_efficiency)
 
     def generate_suggestions(
         energy_usage,
@@ -381,7 +369,6 @@ def user_view():
             )
 
             # Display Priority Actions
-            # st.markdown(label(icon='custom.target.badge.exclamationmark', title='Priority Actions', is_subheader=True), unsafe_allow_html=True)
             for action in suggestions["priority_actions"]:
                 st.markdown(f"- {action}")
 
@@ -425,8 +412,6 @@ def user_view():
                     ],
                 }
             )
-
-            st.markdown("<br>", unsafe_allow_html=True)
             st.markdown(
                 get_csv_download_link(
                     suggestions_df,
@@ -436,15 +421,10 @@ def user_view():
                 ),
                 unsafe_allow_html=True,
             )
-
-            # Add an estimation of potential reduction
-            potential_reduction = (
-                total_emissions * 0.3
-            )  # Assuming 30% reduction potential
+            st.markdown("<br>", unsafe_allow_html=True)
             st.info(
                 f"""
-                By implementing these suggestions, you could potentially reduce your carbon footprint by up to 
-                {potential_reduction:.2f} kgCO2 (30% reduction).
+                By implementing these suggestions, you could potentially reduce your carbon footprint.
                 
                 Track your progress over time to measure the impact of your reduction efforts.
             """
