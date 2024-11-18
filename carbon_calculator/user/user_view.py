@@ -7,6 +7,7 @@ import uuid
 from carbon_calculator.calculator import calculate_CO2_from_energy_usage, calculate_CO2_from_waste, calculate_CO2_from_business_travel
 from carbon_calculator.utils import label, get_csv_download_link, get_image_download_link
 from carbon_calculator.user.generate_suggestions import display_suggestions, generate_suggestions
+from carbon_calculator.user.validate_inputs import validate_inputs
 
 def user_view():
     st.markdown(
@@ -28,6 +29,10 @@ def user_view():
         """,
         unsafe_allow_html=True,
     )
+
+    # Initialize session state variables
+    if 'companies_data' not in st.session_state:
+        st.session_state.companies_data = []
 
     # Company Information
     with st.container():
@@ -54,20 +59,23 @@ def user_view():
             label(icon="bolt.ring.closed", title="Energy Usage", is_subheader=True),
             unsafe_allow_html=True,
         )
-        electricity_bill = st.number_input(
+        st.session_state.electricity_bill = st.number_input(
             "Monthly Electricity Bill (€)",
             min_value=0.0,
             help="Enter your average monthly electricity bill in euros",
+            key="electricity_bill_input"
         )
-        natural_gas_bill = st.number_input(
+        st.session_state.natural_gas_bill = st.number_input(
             "Monthly Natural Gas Bill (€)",
             min_value=0.0,
             help="Enter your average monthly natural gas bill in euros",
+            key="natural_gas_bill_input"
         )
-        fuel_bill = st.number_input(
+        st.session_state.fuel_bill = st.number_input(
             "Monthly Fuel Bill (€)",
             min_value=0.0,
             help="Enter your average monthly fuel bill for transportation in euros",
+            key="fuel_bill_input"
         )
         st.markdown("</div>", unsafe_allow_html=True)
 
@@ -78,17 +86,19 @@ def user_view():
             label(icon="arrow.up.trash", title="Waste", is_subheader=True),
             unsafe_allow_html=True,
         )
-        waste_per_month = st.number_input(
+        st.session_state.waste_per_month = st.number_input(
             "Monthly Waste Generated (kg)",
             min_value=0.0,
             help="Enter the amount of waste generated per month in kilograms",
+            key="waste_per_month_input"
         )
-        recycling_percent = st.slider(
+        st.session_state.recycling_percent = st.slider(
             "Recycling Percentage",
             min_value=0,
             max_value=100,
             value=30,
             help="Percentage of waste that is recycled or composted",
+            key="recycling_percent_input"
         )
         st.markdown("</div>", unsafe_allow_html=True)
 
@@ -99,37 +109,43 @@ def user_view():
             label(icon="airplane.circle", title="Business Travel", is_subheader=True),
             unsafe_allow_html=True,
         )
-        distance_km = st.number_input(
+        st.session_state.distance_km = st.number_input(
             "Distance Traveled (km)",
             min_value=0.0,
             help="Enter the total distance traveled for business purposes in kilometers",
+            key="distance_km_input"
         )
-        fuel_efficiency = st.number_input(
+        st.session_state.fuel_efficiency = st.number_input(
             "Fuel Efficiency (L/100km)",
             min_value=0.1,
             value=8.0,
             help="Enter the average fuel efficiency in liters per 100 kilometers",
+            key="fuel_efficiency_input"
         )
         st.markdown("</div>", unsafe_allow_html=True)
 
-    # Calculation functions
-    calculate_CO2_from_energy_usage(electricity_bill, natural_gas_bill, fuel_bill)
-    calculate_CO2_from_waste(waste_per_month, recycling_percent)
-    calculate_CO2_from_business_travel(distance_km, fuel_efficiency)
-
     # Calculate button
     if st.button("Calculate Carbon Footprint", key="calculate"):
-        if not company_name:
-            st.error("Please enter a company name before calculating.")
+        # Validate all inputs
+        is_valid, error_messages = validate_inputs()
+        
+        if not is_valid:
+            for error in error_messages:
+                st.error(error)
         else:
+            # Proceed with calculations
             CO2_from_energy_usage = calculate_CO2_from_energy_usage(
-                electricity_bill, natural_gas_bill, fuel_bill
+                st.session_state.electricity_bill,
+                st.session_state.natural_gas_bill,
+                st.session_state.fuel_bill
             )
             CO2_from_waste = calculate_CO2_from_waste(
-                waste_per_month, recycling_percent
+                st.session_state.waste_per_month,
+                st.session_state.recycling_percent
             )
             CO2_from_business_travel = calculate_CO2_from_business_travel(
-                distance_km, fuel_efficiency
+                st.session_state.distance_km,
+                st.session_state.fuel_efficiency
             )
 
             # Store data in session state
@@ -258,11 +274,11 @@ def user_view():
                 CO2_from_energy_usage,
                 CO2_from_waste,
                 CO2_from_business_travel,
-                electricity_bill,
-                natural_gas_bill,
-                fuel_bill,
-                waste_per_month,
-                recycling_percent,
+                st.session_state.electricity_bill,
+                st.session_state.natural_gas_bill,
+                st.session_state.fuel_bill,
+                st.session_state.waste_per_month,
+                st.session_state.recycling_percent
             )
             display_suggestions(company_name, suggestions)
 
