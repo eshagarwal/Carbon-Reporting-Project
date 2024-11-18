@@ -1,25 +1,28 @@
-# Carbon Reporting Project
+# 🌏 Carbon Reporting Project
 
-## Overview
 A robust carbon emissions tracking and reporting solution that helps organizations monitor, analyze, and report their carbon footprint in compliance.
 
-## Features
+## 🚀 Features
 - Emissions monitoring
 - Automated report generation
 - Interactive dashboards
 - Export capabilities (PDF, CSV)
 - Historical data analysis
 
-## Tech Stack
-- Web-App: Streamlit with Python
-- Visualization: Plotly
+## 🛠️ Technologies Used
+- Core Technologies: **Python**, **Streamlit**
+- Visualization: **Plotly**
+- User Interface Components: **Streamlit Components**
+- Styling: **CSS**, **HTML** for custom formatting
 
-## Prerequisites
+## 🏁 Gettting Started
+
+### Prerequisites
 - Python 3.8+
-- Plotly
 - Streamlit
+- Plotly
 
-## Installation
+### Installation
 
 1. Clone the repository:
 ```bash
@@ -34,10 +37,10 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-## Usage
+3. Start the application:
 ```bash
 streamlit run app.py
 ```
 
-## License
+## 📄 License
 MIT License - See [LICENSE](./LICENSE) for details
