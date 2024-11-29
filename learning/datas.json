@@ -1,0 +1,137 @@
+[
+    {
+        "id": "0",
+        "company_name": "Gruber Haupt AG",
+        "date": "2023-4-25",
+        "energy_usage": 14014.3692,
+        "waste": 62025.159999999996,
+        "business_travel": 33737.293333333335,
+        "total": 109776.82253333332
+    },
+    {
+        "id": "11",
+        "company_name": "Hinz Br\\u00fcckner GmbH & Co. KG",
+        "date": "2023-12-10",
+        "energy_usage": 19637.119199999997,
+        "waste": 45724.439999999995,
+        "business_travel": 19392.285,
+        "total": 84753.84419999999
+    },
+    {
+        "id": "8",
+        "company_name": "Paul",
+        "date": "2023-10-12",
+        "energy_usage": 14263.784399999999,
+        "waste": 9274.24,
+        "business_travel": 24817.485,
+        "total": 48355.509399999995
+    },
+    {
+        "id": "7",
+        "company_name": "Seidel",
+        "date": "2023-1-2",
+        "energy_usage": 17713.1268,
+        "waste": 8837.32,
+        "business_travel": 17286.72,
+        "total": 43837.1668
+    },
+    {
+        "id": "12",
+        "company_name": "Menzel",
+        "date": "2023-6-14",
+        "energy_usage": 25480.239599999997,
+        "waste": 22921.719999999998,
+        "business_travel": 37044.44333333333,
+        "total": 85446.40293333333
+    },
+    {
+        "id": "2",
+        "company_name": "Seidel",
+        "date": "2023-12-25",
+        "energy_usage": 21780.514799999997,
+        "waste": 50006.28,
+        "business_travel": 27228.74,
+        "total": 99015.53480000001
+    },
+    {
+        "id": "5",
+        "company_name": "Jacob",
+        "date": "2023-6-26",
+        "energy_usage": 36421.685999999994,
+        "waste": 10416.359999999999,
+        "business_travel": 19693.3275,
+        "total": 66531.37349999999
+    },
+    {
+        "id": "6",
+        "company_name": "Bock Nolte Stiftung & Co. KG",
+        "date": "2023-5-3",
+        "energy_usage": 37093.880399999995,
+        "waste": 12694.919999999998,
+        "business_travel": 17076.675,
+        "total": 66865.4754
+    },
+    {
+        "id": "3",
+        "company_name": "Neuhaus AG",
+        "date": "2023-10-1",
+        "energy_usage": 16573.4196,
+        "waste": 45726.119999999995,
+        "business_travel": 29883.42,
+        "total": 92182.9596
+    },
+    {
+        "id": "10",
+        "company_name": "Heim GmbH",
+        "date": "2023-1-14",
+        "energy_usage": 20053.6548,
+        "waste": 54837.31999999999,
+        "business_travel": 28445.5325,
+        "total": 103336.5073
+    },
+    {
+        "id": "14",
+        "company_name": "Friedrich",
+        "date": "2023-1-26",
+        "energy_usage": 38344.590000000004,
+        "waste": 43374.99999999999,
+        "business_travel": 21419.03076923077,
+        "total": 103138.62076923077
+    },
+    {
+        "id": "1",
+        "company_name": "Mertens",
+        "date": "2023-11-15",
+        "energy_usage": 20832.2532,
+        "waste": 39682.56,
+        "business_travel": 27955.975384615384,
+        "total": 88470.78858461538
+    },
+    {
+        "id": "4",
+        "company_name": "Hauser e.G.",
+        "date": "2023-9-8",
+        "energy_usage": 20275.197599999996,
+        "waste": 67324.84,
+        "business_travel": 37859.10333333333,
+        "total": 125459.14093333333
+    },
+    {
+        "id": "9",
+        "company_name": "Eckert Stiftung & Co. KGaA",
+        "date": "2023-4-20",
+        "energy_usage": 31692.0048,
+        "waste": 11195.279999999999,
+        "business_travel": 20759.64,
+        "total": 63646.92479999999
+    },
+    {
+        "id": "13",
+        "company_name": "Menzel Breuer KG",
+        "date": "2023-4-21",
+        "energy_usage": 29603.201999999997,
+        "waste": 62919.03999999999,
+        "business_travel": 19971.93,
+        "total": 112494.17199999999
+    }
+]
