@@ -1,3 +1,5 @@
+import json
+
 import streamlit as st
 
 from carbon_calculator.user.user_view import user_view
@@ -7,6 +9,8 @@ from carbon_calculator.styles import styles
 # Initialize session state for database simulation
 if "companies_data" not in st.session_state:
     st.session_state.companies_data = []
+    with open('./learning/datas.json', 'r') as f:
+        st.session_state.companies_data = json.load(f)
 
 # Page configuration
 st.set_page_config(
