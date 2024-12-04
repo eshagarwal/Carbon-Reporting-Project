@@ -11,9 +11,17 @@ def validate_inputs():
         error_messages.append("Please enter a company name.")
 
     # Energy Usage validation
-    if st.session_state.electricity_bill == 0 and st.session_state.natural_gas_bill == 0 and st.session_state.fuel_bill == 0:
+    if st.session_state.electricity_bill == 0:
         is_valid = False
-        error_messages.append("Please enter at least one energy usage value.")
+        error_messages.append("Please enter the electricity bill.")
+
+    if st.session_state.natural_gas_bill == 0 and st.session_state.fuel_bill == 0:
+        is_valid = False
+        error_messages.append("Please enter the natural gas bill.")
+
+    if st.session_state.fuel_bill == 0:
+        is_valid = False
+        error_messages.append("Please enter the fuel bill.")
     
     # Waste validation
     if st.session_state.waste_per_month == 0:
