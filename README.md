@@ -1,6 +1,6 @@
 # 🌏 Carbon Reporting Project
 
-A robust carbon emissions tracking and reporting solution that helps organizations monitor, analyze, and report their carbon footprint in compliance. **[TRY IT NOW!](https://eshagarwal-carbon-reporting-visualizer.hf.space)**
+A robust carbon emissions tracking and reporting solution that helps organizations monitor, analyze, and report their carbon footprint in compliance.
 
 ## 🚀 Features
 - Emissions monitoring
